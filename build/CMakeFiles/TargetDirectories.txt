@@ -1,0 +1,3 @@
+/Users/ninaluo/openGL/build/CMakeFiles/hello_window.dir
+/Users/ninaluo/openGL/build/CMakeFiles/edit_cache.dir
+/Users/ninaluo/openGL/build/CMakeFiles/rebuild_cache.dir

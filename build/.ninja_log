@@ -1,0 +1,6 @@
+# ninja log v6
+1	52	1745195174574674013	CMakeFiles/hello_window.dir/src/glad.c.o	2e1738e2e98069f8
+255	389	1745195174828226341	hello_window	96598ac6afa0d2da
+1	254	1745195174574446011	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
+3	261	1745533795133158553	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
+261	584	1745533795390975563	hello_window	96598ac6afa0d2da
