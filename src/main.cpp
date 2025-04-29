@@ -1,114 +1,130 @@
-#include "config.h"
-#include <cmath>
-#include <vector>
-#include <algorithm>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 
-struct Vec2 {
-    float x;
-    float y;
+// Vertex Shader source code
+const char* vertexShaderSource = R"(
+#version 330 core
+layout (location = 0) in vec3 aPos;
 
-    Vec2() : x(0.0f), y(0.0f) {}
-    Vec2(float x, float y) : x(x), y(y) {}
-    Vec2 operator+(const Vec2& other) const {
-        return Vec2(x + other.x, y + other.y);
-    }
-    Vec2 operator*(float scalar) const {
-        return Vec2(x * scalar, y * scalar);;
-    }
-};
-
-struct Particle {
-    Vec2 position;
-    Vec2 velocity;
-    float mass;
-    float lifetime;
-    float age;
-    float brightness;
-};
-
-
-
-void launchFirework(std::vector<Particle>& particles, Vec2 origin, int count = 50) {
-    for (int i = 0; i < count; ++i) {
-        float angle = ((float)i / count) * 2.0f * M_PI;
-        float speed = ((rand() % 100) / 100.0f) * 100.0f;
-        Particle p;
-        p.position = origin;
-        p.velocity = Vec2(cos(angle), sin(angle)) * speed;
-        p.mass = 1.0f;
-        p.lifetime = 3.0f;
-        p.age = 0.0f;
-        p.brightness = 1.0f;
-        
-        particles.push_back(p);
-
-    }
+void main()
+{
+    gl_Position = vec4(aPos, 1.0);
 }
-void updateParticles(std::vector<Particle>& particles, float dt) {
+)";
 
-    Vec2 gravity(0.0f, -9.8f);
-    
-    for (std::vector<Particle>::iterator it = particles.begin(); it != particles.end(); ++it) {
-        Particle& p = *it;
-        Vec2 airResistance = p.velocity * -0.1f; // Simple linear drag
-        Vec2 acceleration = gravity + airResistance * (1.0f / p.mass);
+// Fragment Shader source code
+const char* fragmentShaderSource = R"(
+#version 330 core
+out vec4 FragColor;
 
-        p.velocity = p.velocity + acceleration * dt;
-        p.position = p.position + p.velocity * dt;
-        p.age += dt;
-        p.brightness = 1.0f - (p.age / p.lifetime);
-    }
+void main()
+{
+    FragColor = vec4(1.0, 0.5, 0.2, 1.0); // orange color
+}
+)";
 
-    // Remove dead particles
-    particles.erase(
-        std::remove_if(particles.begin(), particles.end(), [](const Particle& p) {
-            return p.age >= p.lifetime;
-        }),
-        particles.end()
-    );
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
 }
 
-void drawParticles(const std::vector<Particle>& particles) {
+int main()
+{
+    // Initialize GLFW
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-}
-int main() {
-    GLFWwindow* window;
-
-    if(!glfwInit()) {
-        std::cout << "GLFW couldn't be initialized" << std::endl;
+    // Create a window
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Triangle", NULL, NULL);
+    if (window == NULL)
+    {
+        std::cerr << "Failed to create GLFW window\n";
+        glfwTerminate();
         return -1;
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-
-    window = glfwCreateWindow(640, 480, "My Window", NULL, NULL);
     glfwMakeContextCurrent(window);
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+
+    // Load OpenGL functions with GLAD
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cerr << "Failed to initialize GLAD\n";
         return -1;
     }
-    #ifndef GL_SILENCE_DEPRECATION
-    #define GL_SILENCE_DEPRECATION
-    #endif
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glPointSize(3.0f);
-    glClearColor(0.25f, 0.5f, 0.75f, 1.0f);
-    std::vector<Particle> particles;
-    while (!glfwWindowShouldClose(window)) {
 
-        float dt = 1.0f / 60.0f;
+    glViewport(0, 0, 800, 600);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    // Vertex data
+    float vertices[] = {
+         0.0f,  0.5f, 0.0f, // top
+        -0.5f, -0.5f, 0.0f, // bottom left
+         0.5f, -0.5f, 0.0f  // bottom right
+    };
+
+    unsigned int VBO, VAO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    // Bind the Vertex Array Object
+    glBindVertexArray(VAO);
+
+    // Bind and fill the Vertex Buffer Object
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // Configure vertex attributes
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // Unbind
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    // Build and compile shaders
+    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+
+    unsigned int shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    // Delete shaders after linking
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    // Render loop
+    while (!glfwWindowShouldClose(window))
+    {
+        // Input
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+
+        // Render
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // updateParticles(particles, dt);
-        // drawParticles(particles);
+        // Draw the triangle
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        // launchFirework(particles, Vec2(0.0f, 0.0f));
+        // Swap buffers and poll IO events
         glfwSwapBuffers(window);
         glfwPollEvents();
-
     }
+
+    // Cleanup
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteProgram(shaderProgram);
 
     glfwTerminate();
     return 0;

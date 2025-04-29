@@ -1,6 +1,18 @@
 # ninja log v6
 1	52	1745195174574674013	CMakeFiles/hello_window.dir/src/glad.c.o	2e1738e2e98069f8
-255	389	1745195174828226341	hello_window	96598ac6afa0d2da
-1	254	1745195174574446011	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
-3	261	1745533795133158553	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
-261	584	1745533795390975563	hello_window	96598ac6afa0d2da
+419	601	1745534845687545826	hello_window	96598ac6afa0d2da
+8	419	1745534845276586494	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
+4	391	1745895145758947472	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
+391	556	1745895146146507292	hello_window	96598ac6afa0d2da
+3	216	1745895222534683094	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
+216	354	1745895222747892106	hello_window	96598ac6afa0d2da
+2	257	1745895480775644607	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
+257	402	1745895481030751168	hello_window	96598ac6afa0d2da
+2	263	1745895589658496818	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
+263	400	1745895589919206903	hello_window	96598ac6afa0d2da
+6	287	1745895597699931548	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
+287	429	1745895597981382468	hello_window	96598ac6afa0d2da
+2	273	1745895613337385488	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
+273	418	1745895613608570407	hello_window	96598ac6afa0d2da
+3	217	1745895974760290546	CMakeFiles/hello_window.dir/src/main.cpp.o	fea485cb539e191d
+217	363	1745895974974795487	hello_window	96598ac6afa0d2da
